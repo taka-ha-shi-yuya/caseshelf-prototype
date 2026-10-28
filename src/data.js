@@ -1,16 +1,18 @@
 // データ層（試作品）
 // 本来はサーバー上のデータベースに保存するが、第1段階の試作品では
-// ブラウザのlocalStorageに保存する。架空の案件・利用者のみを使用し、
-// 実際の社内写真・顧客情報はこの試作品には投入しない。
+// ブラウザのlocalStorageに保存する。
+// 案件名・クライアント名・ハッシュタグは、昭栄美術の公開実績ページ
+// （https://www.shoei-bijutsu.co.jp/works/）に掲載済みの情報をもとにしたサンプル。
+// 写真は実際の現場写真ではなく、すべて自動生成したプレースホルダー画像。
 window.AppData = (function () {
   "use strict";
 
   var KEYS = {
-    users: "caseshelf_users_v1",
-    projects: "caseshelf_projects_v1",
-    saves: "caseshelf_saves_v1",
-    currentUser: "caseshelf_current_user_v1",
-    seeded: "caseshelf_seeded_v1",
+    users: "caseshelf_users_v2",
+    projects: "caseshelf_projects_v2",
+    saves: "caseshelf_saves_v2",
+    currentUser: "caseshelf_current_user_v2",
+    seeded: "caseshelf_seeded_v2",
   };
 
   function uid(prefix) {
@@ -112,104 +114,108 @@ window.AppData = (function () {
     return photos;
   }
 
+  // 案件名・クライアント名・ハッシュタグは https://www.shoei-bijutsu.co.jp/works/ の掲載情報より。
+  // 説明文は掲載情報（案件名・クライアント名・掲載タグ）から推測できる範囲のみを記載し、
+  // 掲載されていない制作の詳細は記載していない。写真は実際の現場写真ではなくプレースホルダー。
   function makeSeedProjects() {
     var defs = [
       {
-        title: "株式会社ノルディック 新本社ロビー内装",
-        tags: ["オフィス内装", "ロビー", "北欧デザイン"],
-        desc:
-          "新本社移転に伴うロビー・受付エリアの内装設計・施工。木材と間接照明を基調に、来訪者に落ち着きを感じてもらえる空間を目指した。",
+        title: "国際物流総合展2026 | 鴻池運輸株式会社",
+        client: "鴻池運輸株式会社",
+        tags: ["BtoB", "展示会ブース"],
         author: "u_member1",
         photos: 5,
-        sfdc: "https://example-crm.my.salesforce.com/0061234ABCDE",
       },
       {
-        title: "SORA食品 展示会ブース（フードEXPO）",
-        tags: ["展示会", "ブース装飾", "食品"],
-        desc: "フードEXPO出展ブースの装飾一式。試食スペースとサイネージを一体化したレイアウトを提案。",
-        author: "u_member2",
-        photos: 8,
-        sfdc: "",
-      },
-      {
-        title: "みなと銀行 支店ウィンドウディスプレイ",
-        tags: ["店舗装飾", "ウィンドウディスプレイ", "金融"],
-        desc: "季節キャンペーンに合わせた店頭ウィンドウの装飾。限られた奥行きの中で視認性を確保する設計。",
-        author: "u_member1",
-        photos: 3,
-        sfdc: "https://example-crm.my.salesforce.com/0069876ZYXWV",
-      },
-      {
-        title: "青葉自動車 新車発表会 会場設営",
-        tags: ["イベント", "会場設営", "自動車"],
-        desc: "新車発表会の会場設営一式。ステージ・サイネージ・試乗車の配置計画を含む。",
-        author: "u_member2",
-        photos: 10,
-        sfdc: "",
-      },
-      {
-        title: "ふたば病院 待合室リニューアル",
-        tags: ["医療施設", "待合室", "サイン計画"],
-        desc: "待合室の家具配置・サイン計画のリニューアル。院内の案内表示をわかりやすく整理した。",
-        author: "u_member1",
-        photos: 4,
-        sfdc: "",
-      },
-      {
-        title: "やまと物産 百貨店催事スペース",
-        tags: ["催事", "百貨店", "店舗装飾"],
-        desc: "百貨店催事スペースの短期装飾。1週間の催事期間に合わせた簡易設営構造を採用。",
+        title: "下水道展2026 | 株式会社荏原製作所様ブース",
+        client: "株式会社荏原製作所",
+        tags: ["BtoB", "BtoC", "展示会ブース"],
         author: "u_member2",
         photos: 6,
-        sfdc: "https://example-crm.my.salesforce.com/0061111QQQQ",
       },
       {
-        title: "テックリンク株式会社 展示会ブース（IT展）",
-        tags: ["展示会", "ブース装飾", "IT"],
-        desc: "IT展示会向けの大型ブース。デモ機展示エリアと商談スペースを分離したレイアウト。",
+        title: "第60回スーパーマーケット・トレードショー2026 | 東洋水産株式会社様ブース",
+        client: "東洋水産株式会社",
+        tags: ["BtoB", "展示会ブース"],
+        author: "u_member1",
+        photos: 4,
+      },
+      {
+        title: "ものづくり ワールド2026 イリノイ州パビリオン",
+        client: "米国イリノイ州政府駐日事務所",
+        tags: ["BtoB", "海外展示会ブース"],
+        author: "u_member2",
+        photos: 3,
+      },
+      {
+        title: "rom&nd popup ロムアンド商事〜ジューシーフラッシュ営業部〜",
+        client: "株式会社電通ライブ",
+        tags: ["BtoC", "ポップアップストア"],
         author: "u_member1",
         photos: 7,
-        sfdc: "",
       },
       {
-        title: "さくら学園 学園祭特設ステージ",
-        tags: ["イベント", "会場設営", "教育"],
-        desc: "学園祭用の特設ステージ設営。限られた予算内での演出照明の工夫。",
+        title: "郡山ヒロセ電機 郡山工場2F新設ショールーム",
+        client: "郡山ヒロセ電機株式会社",
+        tags: ["BtoB", "ショールーム", "ショールーム・内装"],
         author: "u_member2",
-        photos: 2,
-        sfdc: "",
-      },
-      {
-        title: "北陸製紙 工場見学コース サイン計画",
-        tags: ["サイン計画", "工場", "見学コース"],
-        desc: "工場見学コースの順路案内・安全サインの計画と設置。",
-        author: "u_member1",
         photos: 5,
-        sfdc: "https://example-crm.my.salesforce.com/0067777MMMM",
       },
       {
-        title: "グリーンカフェ 新規出店 内装工事",
-        tags: ["店舗装飾", "カフェ", "内装"],
-        desc: "新規出店の内装工事一式。観葉植物を多用したナチュラルテイストの空間。",
+        title: "HVAC&R JAPAN 2026 | 三菱電機",
+        client: "三菱電機株式会社",
+        tags: ["BtoB", "展示会ブース"],
+        author: "u_member1",
+        photos: 2,
+      },
+      {
+        title: "ABB FIA フォーミュラE世界選手権東京大会2025",
+        client: "Formula E Operations Limited",
+        tags: ["BtoB", "モータースポーツ"],
         author: "u_member2",
         photos: 9,
-        sfdc: "",
       },
       {
-        title: "常盤電機 周年記念展示",
-        tags: ["展示会", "周年記念", "電機"],
-        desc: "創業50周年記念の社史展示パネル・記念品展示コーナーの制作。",
+        title: "hololive SUPER EXPO 2025",
+        client: "株式会社ツートップ",
+        tags: ["BtoC", "PRイベント"],
+        author: "u_member1",
+        photos: 8,
+      },
+      {
+        title: "CEATEC2023 | NEDO",
+        client: "国立研究開発法人 新エネルギー・産業技術総合開発機構（NEDO）",
+        tags: ["BtoB", "展示会ブース", "サステナビリティ実績"],
+        author: "u_member2",
+        photos: 3,
+      },
+      {
+        title: "WOODコレクション（モクコレ）2024Plus",
+        client: "東京都",
+        tags: ["行政・自治体・官公庁", "展示会主催工事"],
         author: "u_member1",
         photos: 1,
-        sfdc: "",
       },
       {
-        title: "ひびき不動産 モデルルーム装飾",
-        tags: ["モデルルーム", "住宅", "店舗装飾"],
-        desc: "新築マンションのモデルルーム装飾。家具・照明・観葉植物のコーディネート。",
+        title: "国際宝飾展2026 | 株式会社桑山様",
+        client: "株式会社桑山",
+        tags: ["BtoB", "展示会ブース"],
         author: "u_member2",
         photos: 4,
-        sfdc: "https://example-crm.my.salesforce.com/0063333OOOO",
+      },
+      {
+        title: "TICAD BUSINESS EXPO ＆ CONFERENCE",
+        client: "独立行政法人日本貿易振興機構（JETRO）",
+        tags: ["BtoB"],
+        author: "u_member1",
+        photos: 2,
+      },
+      {
+        title: "フーデックス関西2025イタリアパビリオン | イタリア大使館",
+        client: "イタリア大使館",
+        tags: ["BtoB", "展示会ブース", "インバウンド"],
+        author: "u_member2",
+        photos: 6,
       },
     ];
 
@@ -221,12 +227,12 @@ window.AppData = (function () {
       return {
         id: id,
         title: d.title,
-        description: d.desc,
+        description: "クライアント: " + d.client + "（会社実績ページ掲載情報によるサンプル投稿）",
         tags: d.tags,
         photos: photos,
         coverPhotoId: photos[0].id,
         authorId: d.author,
-        salesforceUrl: d.sfdc || "",
+        salesforceUrl: "",
         createdAt: createdAt,
         updatedAt: createdAt,
       };
